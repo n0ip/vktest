@@ -1,0 +1,4 @@
+<div ng-repeat="action in actions">
+	<button ng-if="action.type == 'action'" ng-class="{red: completed && action.target}">{{action.name}}</button>
+	<a href="{{action.value}}" ng-if="action.type == 'redirect'" ng-class="{red: completed && action.target}">{{action.name}}</a>
+</div>
