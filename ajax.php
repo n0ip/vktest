@@ -87,6 +87,20 @@ switch( $func ) {
 		] );
 	break;
 
+	case 'trackAction':
+		$action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
+		$client = new Predis\Client();
+
+		if( !isset( $action ) ) {
+			print json_encode( ['status' => 'error' ] );
+			exit();
+		}
+
+		print json_encode( [
+			'status' => 'ok',
+		] );
+	break;
+
 	default:
 		print json_encode( ['status' => 'error' ] );
 	break;

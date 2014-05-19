@@ -56,16 +56,16 @@ var VKStats = {
 			callback( response );
 		});
 	},
-	trackAction: function( action, callback ) {
+	trackAction: function( params ) {
 		var request = $.ajax({
 			url: "/ajax.php",
 			type: "GET",
-			data: { function: 'trackAction', action : action },
+			data: { function: 'trackAction', action : params.action, pid : params.pid, uid : params.uid },
 			dataType: "json"
 		});
-
+		
 		request.done(function( response ) {
-			callback( response );
+			params.callback( response );
 		});
 	}
 };

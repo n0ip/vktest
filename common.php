@@ -1,5 +1,7 @@
 <?php
 
+require 'vendor/autoload.php';
+
 session_start();
 $sid = session_id();
 

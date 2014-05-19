@@ -67,9 +67,12 @@ VKStatsApp.controller( 'mainPageCtrl', function( $scope, $location, sessionFacto
 	
 });
 
-VKStatsApp.controller( 'projectsController', function( $scope, $routeParams, sessionFactory ) {
+VKStatsApp.controller( 'projectsController', function( $scope, $routeParams, sessionFactory, $window ) {
 	
 	sessionFactory.getSession.get({}, function( response ) {
+
+		$scope.uid = response.uid;
+
 		VKStats.isCompleted( $routeParams.project_id, response.uid, function ( response ) {			
 			if( response.completed === true ) {
 				$scope.completed = true;
@@ -77,6 +80,16 @@ VKStatsApp.controller( 'projectsController', function( $scope, $routeParams, ses
 			}
 		} );
 	});
+
+	$scope.trackAction = function( action, event ) {
+		
+		if(typeof(event)!=='undefined')  event.preventDefault();
+		
+		VKStats.trackAction( { action : action.name, uid : $scope.uid, pid : $routeParams.project_id, callback : function() {
+				if(typeof(event)!=='undefined') $window.location.href = action.value;
+			}
+		});
+	};
 
 	VKStats.getActions( $routeParams.project_id, function( response ) {
 		$scope.actions = response.rsp;
