@@ -64,9 +64,19 @@ switch( $func ) {
 			exit();
 		}
 
+		$completed = false;
+
+		$client = new Predis\Client();
+
+		$result = $client->hgetall( 'complete_' . $pid );
+
+		if( isset( $result[$uid] ) && $result[$uid] == 1 ) {
+			$completed = true;
+		}
+
 		print json_encode( [
 			'status' => 'ok',
-			'completed' => true
+			'completed' => $completed
 		] );
 	break;
 
@@ -80,6 +90,12 @@ switch( $func ) {
 		if( !isset( $action ) ) {
 			print json_encode( ['status' => 'error' ] );
 			exit();
+		}
+
+		$result = $client->hget( 'target', $pid );
+		if( $result == $action ) {
+			$client->hset( 'complete_' . $pid, $uid, 1 );
+			$client->hset( 'complete_' . $pid . date("Y-m-d"), $uid, 1 );
 		}
 
 		# Атомарный запрос в redis
@@ -104,16 +120,29 @@ switch( $func ) {
 		
 		foreach( $stats as $key => $stat ) {
 			$elem = [];
-			list( $elem['uid'], $elem['action'] ) = explode(":", $key);
-			if( !isset($unique_stats[ $elem['action'] ]) ) $unique_stats[ $elem['action'] ] = 0;
-			$unique_stats[ $elem['action'] ] += 1; // += $stats for not unique
+			if( !empty( $key ) ) {
+				list( $elem['uid'], $elem['action'] ) = explode(":", $key);
+			
+				if( !isset($unique_stats[ $elem['action'] ]) ) $unique_stats[ $elem['action'] ] = 0;
+				$unique_stats[ $elem['action'] ] += 1; // += $stats for not unique
+			}
 		}
 		
 		print_r( $unique_stats );
 		
 	break;
-	
+
 	default:
+		$client = new Predis\Client();
+
+		$pid = 1;
+		#$client->hset( 'target', 5, 'POPUP_DISPLAYED' );
+		# $client->hset( 'target', $pid, 'BIG_RED_BUTTON_CLICKED' );
+		# $result = $client->hget( 'target', $pid );
+
+		$result = $client->hgetall( 'complete_' . $pid . ':' . date("Y-m-d") );
+		print_r( $result );
+
 	break;
 	
 }
