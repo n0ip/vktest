@@ -19,8 +19,8 @@ VKStatsApp.config( [ '$routeProvider',
 
 VKStatsApp.factory( 'sessionFactory', function( $resource ) {
 	return {
-		getSession: $resource( '/ajax.php?function=getSession' ),
-		newSession: $resource( '/ajax.php?function=newSession' )
+		getSession: $resource( '/host-ajax.php?function=getSession' ),
+		newSession: $resource( '/host-ajax.php?function=newSession' )
 	};
 });
 
