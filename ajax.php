@@ -86,6 +86,7 @@ switch( $func ) {
 		$uid    = filter_input(INPUT_GET, 'uid', FILTER_SANITIZE_STRING);
 		
 		$client = new Predis\Client();
+		$date = date("Y-m-d");
 
 		if( !isset( $action ) ) {
 			print json_encode( ['status' => 'error' ] );
@@ -95,12 +96,11 @@ switch( $func ) {
 		$result = $client->hget( 'target', $pid );
 		if( $result == $action ) {
 			$client->hset( 'complete_' . $pid, $uid, 1 );
-			$client->hset( 'complete_' . $pid . date("Y-m-d"), $uid, 1 );
+			$client->hset( 'complete_' . $pid . $date, $uid, 1 );
 		}
 
 		# Атомарный запрос в redis
-		$client->hincrby( 'cl_' . $pid . ':' . date("Y-m-d"), $action, 1 );
-		$client->hincrby( 'ucl_' . $pid . ':' . date("Y-m-d"), $uid.":".$action, 1 );
+		$client->hincrby( 'ucl_' . $pid . ':' . $date, $uid.":".$action, 1 );
 		
 		print json_encode( [
 			'status' => 'ok',
@@ -140,7 +140,7 @@ switch( $func ) {
 		# $client->hset( 'target', $pid, 'BIG_RED_BUTTON_CLICKED' );
 		# $result = $client->hget( 'target', $pid );
 
-		$result = $client->hgetall( 'complete_' . $pid . ':' . date("Y-m-d") );
+		$result = $client->hgetall( 'cl_' . $pid . ':' . date("Y-m-d") );
 		print_r( $result );
 
 	break;

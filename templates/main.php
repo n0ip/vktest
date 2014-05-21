@@ -1,3 +1,5 @@
+<a href="">Перейти в Админку</a>
+
 <button ng-click="newSession()">Обновить сессию</button><br />
 SID: {{ sid }}<br />
 UID: {{ uid }}<br />
