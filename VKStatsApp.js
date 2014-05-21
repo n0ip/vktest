@@ -4,7 +4,7 @@ VKStatsApp.config( [ '$routeProvider',
 	function($routeProvider) {
 		$routeProvider.
 		when('/', {
-			templateUrl: '/templates/main.php',
+			templateUrl: '/templates/main.html',
 			controller: 'mainPageCtrl'
 		}).
 		when('/project/:project_id', {

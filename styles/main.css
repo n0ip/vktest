@@ -9,3 +9,12 @@ div.redirect {
 .red {
 	color: red;
 }
+
+table.admin {
+	width: 300px;
+	margin: 0 auto;
+}
+
+.center {
+	text-align: center;
+}

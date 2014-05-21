@@ -35,6 +35,12 @@ switch( $func ) {
 			exit();
 		}
 
+		$dbh = new PDO('mysql:host=localhost;dbname=vktest', 'root', 'password');
+		$sth = $dbh->prepare("SELECT actions FROM projects where id = ?");
+		$sth->execute( [ $pid ] );
+		$result = $sth->fetchAll();
+		$rsp['rsp'] = json_decode( $result[0]['actions'], true );
+
 		print json_encode( [
 			'rsp' => [
 				[
@@ -87,6 +93,7 @@ switch( $func ) {
 		
 		$client = new Predis\Client();
 		$date = date("Y-m-d");
+		$date = '2014-05-26';
 
 		if( !isset( $action ) ) {
 			print json_encode( ['status' => 'error' ] );
@@ -100,7 +107,13 @@ switch( $func ) {
 		}
 
 		# Атомарный запрос в redis
-		$client->hincrby( 'ucl_' . $pid . ':' . $date, $uid.":".$action, 1 );
+		$client->hincrby( 'click_' . $pid . ':' . $date, $action, 1 );
+		$client->hincrby( 'project_clicks_' . $pid . ':', $action, 1 );
+
+		if( $client->hset( 'unique_click_' . $pid . ':' . $date, $uid.":".$action, 1 ) ) {
+			$client->hincrby( 'total_unique_clicks_' . $pid . ':' . $date, $action, 1 );
+			$client->hincrby( 'project_total_unique_clicks_' . $pid . ':', $action, 1 );
+		}
 		
 		print json_encode( [
 			'status' => 'ok',
