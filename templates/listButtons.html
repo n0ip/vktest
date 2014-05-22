@@ -1,3 +1,5 @@
+<a href="/">Список проектов</a>
+
 <div ng-repeat="action in actions">
 	<button ng-if="action.type == 'action'" ng-class="{red: completed && action.target}" ng-click="trackAction( action )">{{action.name}}</button>
 	<a href="{{action.value}}" ng-if="action.type == 'redirect'" ng-class="{red: completed && action.target}" ng-click="trackAction( action, $event )">{{action.name}}</a>

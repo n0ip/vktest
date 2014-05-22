@@ -17,15 +17,17 @@ PRIMARY KEY (id)
 $success = '';
 
 if( !empty( $_POST ) ) {
-	echo "<pre>";
-	var_dump($_POST);
-	echo "</pre>";
-
-	echo json_encode($_POST['actions']);
 	
 	if( !empty( $_POST['project_name']) ) {
 		$sth = $dbh->prepare("INSERT INTO projects (name, actions) VALUES (?, ?)");
-		$sth->execute([ $_POST['project_name'], json_encode($_POST['actions'], true) ]);
+		$sth->execute([ $_POST['project_name'], json_encode( array_values( $_POST['actions'] ) ) ]);
+
+		foreach( $_POST['actions'] as $action ) {
+			if( $action['target'] == "true" ) {
+				$client->hset( 'target', $dbh->lastInsertId(), $action['name'] );
+			}
+		}
+
 		header('Location:admin.php');
 	};
 

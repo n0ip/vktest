@@ -19,12 +19,20 @@ switch( $func ) {
 	break;
 
 	case 'getProjects':
+
+		$dbh = new PDO('mysql:host=localhost;dbname=vktest', 'root', 'password');
+		$sth = $dbh->prepare("SELECT id, name FROM projects");
+		$sth->execute();
+
+		$response = [];
+
+		$results = $sth->fetchAll( PDO::FETCH_ASSOC );
+		foreach( $results as $result ) {
+			$response[ $result['id'] ] = $result['name'];
+		}
+
 		print json_encode( ['status' => 'ok', 
-							'rsp' => [
-								1 => 'aaa',
-								2 => 'bbb',
-								4 => 'ccc'
-							] ] );
+							'rsp' => $response ] );
 	break;
 
 	case 'getActions':
@@ -39,26 +47,11 @@ switch( $func ) {
 		$sth = $dbh->prepare("SELECT actions FROM projects where id = ?");
 		$sth->execute( [ $pid ] );
 		$result = $sth->fetchAll();
-		$rsp['rsp'] = json_decode( $result[0]['actions'], true );
+		$response = json_decode( $result[0]['actions'], true );
 
-		print json_encode( [
-			'rsp' => [
-				[
-					'type' => 'action',
-					'name' => 'POPUP_DISPLAYED'
-				],
-				[
-					'type' => 'action',
-					'name' => 'BIG_RED_BUTTON_CLICKED',
-					'target' => true
-				],
-				[
-					'type'  => 'redirect',
-					'name'  => 'MAIN_SITE_LINK',
-					'value' => 'http://mysite.com/example'
-				],
-			]
-		] );
+		print json_encode( ['status' => 'ok',
+							'rsp' => $response ] );
+		
 	break;
 
 	case 'isCompleted':
