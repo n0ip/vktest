@@ -85,8 +85,7 @@ switch( $func ) {
 		$uid    = filter_input(INPUT_GET, 'uid', FILTER_SANITIZE_STRING);
 		
 		$client = new Predis\Client();
-		$date = date("Y-m-d");
-		$date = '2014-05-26';
+		$date = date("Y-m-d"); # TODO Принимать сюда дату
 
 		if( !isset( $action ) ) {
 			print json_encode( ['status' => 'error' ] );

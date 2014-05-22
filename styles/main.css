@@ -18,3 +18,26 @@ table.admin {
 .center {
 	text-align: center;
 }
+
+.bg-gray {
+	background-color: #DEDEDE;
+	margin: 10px;
+	padding: 10px;
+}
+
+.add-form > form {
+}
+
+.add-form > form > div {
+	padding: 5px;
+}
+
+
+.add-form > form > div > div {
+	padding: 3px;
+}
+
+.el-group {
+	background-color: white; 
+	margin-top: 5px;
+}

@@ -7,15 +7,6 @@ $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
 
 $dbh = new PDO('mysql:host=localhost;dbname=vktest', 'root', 'password');
 
-$dbh->exec(
-"CREATE TABLE IF NOT EXISTS projects ( id INT(10) NOT NULL AUTO_INCREMENT,
-name VARCHAR(40),
-actions TEXT,
-PRIMARY KEY (id)
-);");
-
-$success = '';
-
 if( !empty( $_POST ) ) {
 	
 	if( !empty( $_POST['project_name']) ) {
@@ -23,7 +14,7 @@ if( !empty( $_POST ) ) {
 		$sth->execute([ $_POST['project_name'], json_encode( array_values( $_POST['actions'] ) ) ]);
 
 		foreach( $_POST['actions'] as $action ) {
-			if( $action['target'] == "true" ) {
+			if( isset( $action['target']) && $action['target'] == "true" ) {
 				$client->hset( 'target', $dbh->lastInsertId(), $action['name'] );
 			}
 		}
@@ -86,6 +77,24 @@ VKAdminApp.controller( 'MainCtrl', function( $scope ) {
 		for (var i = min; i <= max; i += step) input.push(i);
 		return input;
 	 };
+	 
+	 $scope.target_checked = false;
+	 
+	 $scope.check_target = function( index ) {
+		 if(!$scope.target_checked ) {
+			 	 $scope.target_checked = true;
+		 } else {
+			 	 $scope.target_checked = false;
+		 }
+		 $scope.checked_index = index;
+	 };
+	 
+	 $scope.check_disabled = function( index ) {
+		 if( $scope.target_checked === true && $scope.checked_index !== index ) {
+			 return true;
+		 }
+	 };
+
 });
 </script>
 
@@ -94,19 +103,23 @@ VKAdminApp.controller( 'MainCtrl', function( $scope ) {
 <body ng-controller="MainCtrl">
 <noscript><meta http-equiv="refresh" content="0; URL=http://vk.com/badbrowser.php"></noscript>
 
-<div class='alert-success'><?=$success?></div>
+<h4><a href="../../">Главная</a></h4>
+
 <div class="center">
 <h1>Проекты</h1>
 <?php switch( $action ) : ?>
 <?php default: ?>
+
 <h3>Добавить проект</h3>
-<form method="POST" action="admin.php" name="add_project">
+
+<div class="bg-gray add-form">
+<form method="POST" action="admin.php" name="add_project" class="form-horizontal">
 	<div>Название: <input type="text" name="project_name" ng-model="project_name" required /></div>
 
-	<button ng-click="add($event)">Добавить элементов</button>
-	<button ng-click="del($event)">Убрать элемент</button>
+	<button ng-click="add($event)" class="btn btn-success">Добавить элемент</button>
+	<button ng-click="del($event)" class="btn btn-danger">Убрать элемент</button>
 	
-	<div ng-repeat="i in range(1, elements)" >
+	<div ng-repeat="i in range(1, elements)" class="el-group" >
 	
 	<div>Имя кнопки: <input type="text" name="actions[{{i}}][name]" required></div>
 	<div>Тип кнопки:
@@ -116,14 +129,15 @@ VKAdminApp.controller( 'MainCtrl', function( $scope ) {
 	</select>
 	</div>
 	<div>Целевая:
-		<input type="checkbox" name="actions[{{i}}][target]" value="true"></input>
+		<input type="checkbox" name="actions[{{i}}][target]" ng-click="check_target(i)" ng-disabled="check_disabled(i)" value="true"></input>
 	</div>
 	<div>Ссылка:
 		<input type="text" name="actions[{{i}}][value]" value="http://"></input>
 	</div>
 	</div>
-	<div><input type="submit"/></div>
+	<div><input type="submit" class="btn btn-default"/></div>
 </form>
+</div>
 
 <table class="table admin">
 <?php

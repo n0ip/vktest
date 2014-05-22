@@ -1,11 +1,13 @@
-<a href="admin/admin.php">Перейти в Админку</a>
+<h4><a href="admin/admin.php">Перейти в Админку</a></h4>
 
-<button ng-click="newSession()">Обновить сессию</button><br />
-SID: {{ sid }}<br />
-UID: {{ uid }}<br />
+<div><button ng-click="newSession()" class="btn btn-default">Обновить сессию</button></div>
+<div>SID: {{ sid }}</div>
+<div>UID: {{ uid }}</div>
 
-Перейти к проекту: <br />
+<div><h3>Перейти к проекту:</h3></div>
 
-<div ng-repeat="(id, project) in projects">
-	<a ng-href="#/project/{{ id }}" ng-click="isAllowed( id, uid, $event )">{{ project }}</a>
-</div>
+<table class="table">
+<tr ng-repeat="(id, project) in projects">
+	<td><a ng-href="#/project/{{ id }}" ng-click="isAllowed( id, uid, $event )">{{ project }}</a></td>
+</tr>
+</table>

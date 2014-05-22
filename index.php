@@ -42,7 +42,7 @@
 <body>
 <noscript><meta http-equiv="refresh" content="0; URL=http://vk.com/badbrowser.php"></noscript>
 
-<div ng-app="VKStatsApp" ng-view></div>
+<div ng-app="VKStatsApp" ng-view class="center"></div>
 
 </body>
 </html>
