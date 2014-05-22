@@ -28,7 +28,10 @@ VKStatsApp.directive('loadButtons', function () {
 	return {
 		restrict: 'E',
 		templateUrl: '/templates/listButtons.html',
-		scope: true
+		scope: true,
+		link: function($scope) {
+			$scope.log_date = new Date().toJSON().slice(0,10);
+		}
 	};
 });
 
@@ -81,11 +84,11 @@ VKStatsApp.controller( 'projectsController', function( $scope, $routeParams, ses
 		} );
 	});
 
-	$scope.trackAction = function( action, event ) {
-		
+	$scope.trackAction = function( date, action, event ) {
+	
 		if(typeof(event)!=='undefined')  event.preventDefault();
 		
-		VKStats.trackAction( { action : action.name, uid : $scope.uid, pid : $routeParams.project_id, callback : function() {
+		VKStats.trackAction( { action : action.name, uid : $scope.uid, pid : $routeParams.project_id, date : date, callback : function() {
 
 				VKStats.isCompleted( $routeParams.project_id, $scope.uid, function ( response ) {
 					if( response.completed === true ) {

@@ -60,7 +60,7 @@ var VKStats = {
 		var request = $.ajax({
 			url: "/ajax.php",
 			type: "GET",
-			data: { function: 'trackAction', action : params.action, pid : params.pid, uid : params.uid },
+			data: { function: 'trackAction', action : params.action, pid : params.pid, uid : params.uid, date : params.date },
 			dataType: "json"
 		});
 		

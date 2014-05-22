@@ -1,6 +1,8 @@
 <a href="/"><h3>Назад к списку проектов</h3></a>
 
+Когда вы кликнули? <input type="date" ng-model="log_date" />
+<hr />
 <div ng-repeat="action in actions" class="well" style="max-width: 400px; margin: 0 auto">
-	<button class="btn btn-primary btn-lg btn-block" ng-if="action.type == 'action'" ng-class="{'btn-danger': completed && action.target}" ng-click="trackAction( action )">{{action.name}}</button>
-	<a href="{{action.value}}" ng-if="action.type == 'redirect'" ng-class="{red: completed && action.target}" ng-click="trackAction( action, $event )">{{action.name}}</a>
+	<button class="btn btn-primary btn-lg btn-block" ng-if="action.type == 'action'" ng-class="{'btn-danger': completed && action.target}" ng-click="trackAction( log_date, action )">{{action.name}}</button>
+	<a href="{{action.value}}" ng-if="action.type == 'redirect'" ng-class="{red: completed && action.target}" ng-click="trackAction( log_date, action, $event )">{{action.name}}</a>
 </div>
